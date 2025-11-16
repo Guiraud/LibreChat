@@ -4,7 +4,22 @@ Guide ultra-rapide pour les erreurs courantes lors du build de LibreChat Desktop
 
 ---
 
-## 🔴 Erreur Actuelle: "spawn app-builder_arm64 ENOENT"
+## 🟢 Build Frontend - Erreur Résolue
+
+### Erreur: "Rollup failed to resolve import lucide-react"
+
+✅ **Déjà corrigé dans ce commit !**
+
+Cette erreur se produit quand Vite ne peut pas résoudre les imports depuis le package workspace `@librechat/client`.
+
+**Si vous voyez encore cette erreur:**
+```bash
+git pull origin claude/analyze-this-01Tz4kSz4zLfUznreZ8cyjAU
+```
+
+---
+
+## 🔴 Erreur: "spawn app-builder_arm64 ENOENT"
 
 ### ⚡ Solution en 1 commande
 
