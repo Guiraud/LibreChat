@@ -103,6 +103,9 @@ export default defineConfig(({ command }) => ({
     sourcemap: process.env.NODE_ENV === 'development',
     outDir: './dist',
     minify: 'terser',
+    commonjsOptions: {
+      include: [/@librechat\/client/, /node_modules/],
+    },
     rollupOptions: {
       preserveEntrySignatures: 'strict',
       output: {
@@ -251,6 +254,13 @@ export default defineConfig(({ command }) => ({
       },
     },
     chunkSizeWarningLimit: 1500,
+  },
+  optimizeDeps: {
+    include: ['@librechat/client'],
+    exclude: [],
+  },
+  ssr: {
+    noExternal: ['@librechat/client'],
   },
   resolve: {
     alias: {
