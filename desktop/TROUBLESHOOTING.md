@@ -4,6 +4,70 @@ Ce guide résout les problèmes courants lors du build de l'application desktop.
 
 ---
 
+## ⚡ Fix Rapide pour les Erreurs Courantes
+
+```bash
+# À la racine du projet
+./desktop/fix-app-builder.sh
+```
+
+Ce script répare automatiquement les problèmes d'app-builder.
+
+---
+
+## ❌ Erreur: "spawn app-builder_arm64 ENOENT"
+
+### Symptôme
+```
+⨯ spawn /path/to/node_modules/app-builder-bin/mac/app-builder_arm64 ENOENT
+failedTask=build
+```
+
+### Cause
+Le binaire `app-builder` (utilisé par electron-builder) est manquant ou n'a pas les bonnes permissions.
+
+### Solutions
+
+#### Solution 1: Script de Fix Automatique (Recommandé)
+```bash
+# À la racine du projet
+./desktop/fix-app-builder.sh
+
+# Puis retry le build
+npm run desktop:build:arm64
+```
+
+#### Solution 2: Fix Manuel
+```bash
+# À la racine du projet
+rm -rf node_modules/app-builder-bin
+npm install app-builder-bin@4.0.0 --save-dev --legacy-peer-deps
+
+# Vérifier l'installation
+ls -la node_modules/app-builder-bin/mac/
+
+# Donner les permissions
+chmod +x node_modules/app-builder-bin/mac/app-builder_arm64
+
+# Retry le build
+npm run desktop:build:arm64
+```
+
+#### Solution 3: Clean Install
+```bash
+# Nettoyer complètement
+rm -rf node_modules/ package-lock.json
+rm -rf desktop/node_modules/
+
+# Réinstaller
+npm install
+
+# Rebuild
+npm run desktop:build:arm64
+```
+
+---
+
 ## ❌ Erreur: "Cannot compute electron version"
 
 ### Symptôme

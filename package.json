@@ -88,7 +88,8 @@
     "desktop:build": "node config/build-desktop.js",
     "desktop:build:arm64": "npm run frontend && cd desktop && electron-builder --mac --arm64 --config electron-builder.config.js",
     "desktop:build:x64": "npm run frontend && cd desktop && electron-builder --mac --x64 --config electron-builder.config.js",
-    "desktop:build:universal": "npm run frontend && cd desktop && electron-builder --mac --universal --config electron-builder.config.js"
+    "desktop:build:universal": "npm run frontend && cd desktop && electron-builder --mac --universal --config electron-builder.config.js",
+    "desktop:fix": "bash desktop/fix-app-builder.sh"
   },
   "repository": {
     "type": "git",
