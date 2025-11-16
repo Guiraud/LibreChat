@@ -7,6 +7,7 @@ module.exports = {
   appId: 'ai.librechat.desktop',
   productName: 'LibreChat',
   copyright: 'Copyright © 2025 LibreChat',
+  electronVersion: '32.2.8',
 
   directories: {
     output: 'dist-desktop',

@@ -2,6 +2,8 @@
 
 Application de bureau native macOS pour LibreChat, compatible avec Apple Silicon (M1/M2/M3/M4).
 
+> 🔧 **Problème de build ?** Consultez le [Guide de Dépannage](TROUBLESHOOTING.md) pour résoudre les erreurs courantes.
+
 ## 📋 Prérequis
 
 - **Node.js** 18.x ou supérieur

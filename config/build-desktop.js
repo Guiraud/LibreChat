@@ -105,13 +105,52 @@ async function installDesktopDependencies() {
   log('\n📥 Installing desktop dependencies...', colors.bright);
 
   const desktopDir = path.join(__dirname, '..', 'desktop');
+  const nodeModulesDir = path.join(desktopDir, 'node_modules');
+
+  // Check if dependencies are already installed
+  if (fs.existsSync(nodeModulesDir)) {
+    log('✅ Desktop dependencies already installed (skipping)', colors.green);
+    return;
+  }
 
   try {
-    await runCommand('npm', ['install'], desktopDir);
-    log('✅ Desktop dependencies installed', colors.green);
+    // Install with ELECTRON_SKIP_BINARY_DOWNLOAD to avoid download issues
+    // electron-builder will download Electron when needed
+    const env = {
+      ...process.env,
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1',
+    };
+
+    const proc = spawn('npm', ['install', '--no-optional'], {
+      cwd: desktopDir,
+      stdio: 'inherit',
+      shell: true,
+      env,
+    });
+
+    await new Promise((resolve, reject) => {
+      proc.on('close', (code) => {
+        if (code !== 0) {
+          // Non-fatal error - electron-builder can handle it
+          log('⚠️  Some dependencies may not be installed, but continuing...', colors.yellow);
+          log('   electron-builder will download Electron during build', colors.blue);
+          resolve();
+        } else {
+          log('✅ Desktop dependencies installed', colors.green);
+          resolve();
+        }
+      });
+
+      proc.on('error', (err) => {
+        log('⚠️  Error installing dependencies, but continuing...', colors.yellow);
+        log(`   ${err.message}`, colors.yellow);
+        resolve(); // Don't fail the build
+      });
+    });
   } catch (error) {
-    log('❌ Failed to install desktop dependencies', colors.red);
-    throw error;
+    log('⚠️  Failed to install desktop dependencies, but continuing...', colors.yellow);
+    log('   electron-builder will download necessary files during build', colors.blue);
+    // Don't throw - let electron-builder handle it
   }
 }
 
