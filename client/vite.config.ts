@@ -267,6 +267,8 @@ export default defineConfig(({ command }) => ({
       '~': path.join(__dirname, 'src/'),
       $fonts: path.resolve(__dirname, 'public/fonts'),
       'micromark-extension-math': 'micromark-extension-llm-math',
+      // Point to source files instead of pre-built dist to avoid external imports issue
+      '@librechat/client': path.resolve(__dirname, '../packages/client/src/index.ts'),
     },
   },
 }));
