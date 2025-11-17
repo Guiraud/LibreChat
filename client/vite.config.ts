@@ -269,8 +269,21 @@ export default defineConfig(({ command }) => ({
       'micromark-extension-math': 'micromark-extension-llm-math',
       // Point to source files instead of pre-built dist to avoid external imports issue
       '@librechat/client': path.resolve(__dirname, '../packages/client/src/index.ts'),
-      // Force peer dependencies to resolve from client/node_modules instead of packages/client/node_modules
+      // Force ALL peer dependencies to resolve from client/node_modules
+      // This is required because we're using @librechat/client sources which import these,
+      // but they're only installed in client/node_modules (not packages/client/node_modules)
       'lucide-react': path.resolve(__dirname, './node_modules/lucide-react'),
+      'dompurify': path.resolve(__dirname, './node_modules/dompurify'),
+      'react': path.resolve(__dirname, './node_modules/react'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
+      'jotai': path.resolve(__dirname, './node_modules/jotai'),
+      'clsx': path.resolve(__dirname, './node_modules/clsx'),
+      'i18next': path.resolve(__dirname, './node_modules/i18next'),
+      'react-i18next': path.resolve(__dirname, './node_modules/react-i18next'),
+      'framer-motion': path.resolve(__dirname, './node_modules/framer-motion'),
+      'react-hook-form': path.resolve(__dirname, './node_modules/react-hook-form'),
+      'tailwind-merge': path.resolve(__dirname, './node_modules/tailwind-merge'),
+      'class-variance-authority': path.resolve(__dirname, './node_modules/class-variance-authority'),
     },
     // Ensure modules are resolved from the client directory first
     preserveSymlinks: true,
