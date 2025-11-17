@@ -10,6 +10,7 @@ module.exports = {
   electronVersion: '32.2.8',
 
   directories: {
+    app: '..',  // Point to parent directory (project root) where all files are
     output: 'dist-desktop',
     buildResources: 'desktop/build',
   },
