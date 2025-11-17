@@ -269,13 +269,12 @@ export default defineConfig(({ command }) => ({
       'micromark-extension-math': 'micromark-extension-llm-math',
       // Point to source files instead of pre-built dist to avoid external imports issue
       '@librechat/client': path.resolve(__dirname, '../packages/client/src/index.ts'),
-      // Force ALL peer dependencies to resolve from client/node_modules
+      // Force peer dependencies to resolve from client/node_modules
       // This is required because we're using @librechat/client sources which import these,
       // but they're only installed in client/node_modules (not packages/client/node_modules)
+      // Note: react and react-dom are NOT aliased to allow sub-path imports like 'react/jsx-runtime'
       'lucide-react': path.resolve(__dirname, './node_modules/lucide-react'),
       'dompurify': path.resolve(__dirname, './node_modules/dompurify'),
-      'react': path.resolve(__dirname, './node_modules/react'),
-      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
       'jotai': path.resolve(__dirname, './node_modules/jotai'),
       'clsx': path.resolve(__dirname, './node_modules/clsx'),
       'i18next': path.resolve(__dirname, './node_modules/i18next'),
