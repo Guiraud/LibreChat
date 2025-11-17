@@ -135,6 +135,55 @@
 
 [For a thorough review of our features, see our docs here](https://docs.librechat.ai/) 📚
 
+---
+
+## 🖥️ Desktop Application
+
+LibreChat is now available as a **native desktop application** for macOS (Apple Silicon & Intel)!
+
+### Quick Installation
+
+```bash
+# 1. Clone or download the repository
+git clone https://github.com/danny-avila/LibreChat.git
+cd LibreChat
+
+# 2. Install dependencies
+npm install
+
+# 3. Build the desktop app
+npm run desktop:build:arm64   # For Apple Silicon (M1/M2/M3/M4)
+npm run desktop:build:x64     # For Intel Macs
+npm run desktop:build         # Auto-detect your architecture
+```
+
+The DMG file will be created in `dist-desktop/`. Double-click to install!
+
+### Features
+- ✅ **Native macOS experience** with menu bar and keyboard shortcuts
+- ✅ **Embedded backend** - No Docker or external setup required
+- ✅ **Local database** - Works offline after configuration
+- ✅ **Auto Dark Mode** - Follows your system preferences
+- ✅ **Quick startup** - Ready in 3-5 seconds
+
+### Configuration
+On first launch, configure your API keys:
+
+```bash
+# Create config directory
+mkdir -p ~/.librechat
+
+# Copy environment template
+cp .env.example ~/.librechat/.env
+
+# Edit with your API keys
+nano ~/.librechat/.env
+```
+
+📖 **Full Desktop Guide**: See [desktop/README.md](desktop/README.md) and [DESKTOP_QUICKSTART.md](DESKTOP_QUICKSTART.md)
+
+---
+
 ## 🪶 All-In-One AI Conversations with LibreChat
 
 LibreChat brings together the future of assistant AIs with the revolutionary technology of OpenAI's ChatGPT. Celebrating the original styling, LibreChat gives you the ability to integrate multiple AI models. It also integrates and enhances original client features such as conversation and message search, prompt templates and plugins.

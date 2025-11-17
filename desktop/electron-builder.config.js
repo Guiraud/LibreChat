@@ -10,34 +10,34 @@ module.exports = {
   electronVersion: '32.2.8',
 
   directories: {
-    output: 'dist-desktop',
-    buildResources: 'desktop/build',
+    output: '../dist-desktop',
+    buildResources: 'build',
   },
 
   files: [
-    'desktop/main.js',
-    'desktop/preload.js',
-    'desktop/loading.html',
-    'api/**/*',
-    'client/dist/**/*',
-    'packages/**/*',
-    '!packages/**/node_modules',
-    '!packages/**/src',
-    '!packages/**/*.ts',
-    '!packages/**/*.map',
-    'node_modules/**/*',
-    'package.json',
-    '.env.example',
-    'librechat.example.yaml',
+    'main.js',
+    'preload.js',
+    'loading.html',
+    '../api/**/*',
+    '../client/dist/**/*',
+    '../packages/**/*',
+    '!../packages/**/node_modules',
+    '!../packages/**/src',
+    '!../packages/**/*.ts',
+    '!../packages/**/*.map',
+    '../node_modules/**/*',
+    '../package.json',
+    '../.env.example',
+    '../librechat.example.yaml',
   ],
 
   extraResources: [
     {
-      from: '.env.example',
+      from: '../.env.example',
       to: '.env.example',
     },
     {
-      from: 'librechat.example.yaml',
+      from: '../librechat.example.yaml',
       to: 'librechat.example.yaml',
     },
   ],
@@ -51,14 +51,15 @@ module.exports = {
       },
     ],
     category: 'public.app-category.productivity',
-    icon: 'desktop/build/icon.icns',
+    // icon: 'build/icon.icns', // Commented out - using default Electron icon
     darkModeSupport: true,
-    hardenedRuntime: true,
+    hardenedRuntime: false,
     gatekeeperAssess: false,
-    entitlements: 'desktop/build/entitlements.mac.plist',
-    entitlementsInherit: 'desktop/build/entitlements.mac.plist',
+    entitlements: 'build/entitlements.mac.plist',
+    entitlementsInherit: 'build/entitlements.mac.plist',
     minimumSystemVersion: '10.15.0',
     type: 'distribution',
+    identity: null, // Disable code signing
   },
 
   // DMG configuration
@@ -75,7 +76,7 @@ module.exports = {
         path: '/Applications',
       },
     ],
-    icon: 'desktop/build/icon.icns',
+    // icon: 'build/icon.icns', // Commented out - using default Electron icon
     iconSize: 128,
     title: 'Install LibreChat',
     window: {
@@ -89,13 +90,13 @@ module.exports = {
   // Windows configuration (for future)
   win: {
     target: ['nsis'],
-    icon: 'desktop/build/icon.ico',
+    // icon: 'build/icon.ico', // Commented out - using default Electron icon
   },
 
   // Linux configuration (for future)
   linux: {
     target: ['AppImage', 'deb'],
-    icon: 'desktop/build/icon.png',
+    // icon: 'build/icon.png', // Commented out - using default Electron icon
     category: 'Office',
   },
 

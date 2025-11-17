@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 // @ts-ignore
 import path from 'path';
 import type { Plugin } from 'vite';
@@ -34,6 +35,7 @@ export default defineConfig(({ command }) => ({
   envPrefix: ['VITE_', 'SCRIPT_', 'DOMAIN_', 'ALLOW_'],
   plugins: [
     react(),
+    contextAwareTildeAlias(),
     nodePolyfills(),
     VitePWA({
       injectRegister: 'auto', // 'auto' | 'manual' | 'disabled'
@@ -48,11 +50,8 @@ export default defineConfig(({ command }) => ({
           '**/*.{js,css,html}',
           'assets/favicon*.png',
           'assets/icon-*.png',
-          'assets/apple-touch-icon*.png',
-          'assets/maskable-icon.png',
-          'manifest.webmanifest',
         ],
-        globIgnores: ['images/**/*', '**/*.map', 'index.html'],
+        globIgnores: ['images/**/*', '**/*.map', 'index.html', 'sw.js', 'workbox-*.js'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         navigateFallbackDenylist: [/^\/oauth/, /^\/api/],
       },
@@ -264,7 +263,7 @@ export default defineConfig(({ command }) => ({
   },
   resolve: {
     alias: {
-      '~': path.join(__dirname, 'src/'),
+      // NOTE: ~ alias is handled by contextAwareTildeAlias plugin for context-aware resolution
       $fonts: path.resolve(__dirname, 'public/fonts'),
       'micromark-extension-math': 'micromark-extension-llm-math',
       // Point to source files instead of pre-built dist to avoid external imports issue
@@ -274,15 +273,16 @@ export default defineConfig(({ command }) => ({
       // but they're only installed in client/node_modules (not packages/client/node_modules)
       // Note: react and react-dom are NOT aliased to allow sub-path imports like 'react/jsx-runtime'
       'lucide-react': path.resolve(__dirname, './node_modules/lucide-react'),
-      'dompurify': path.resolve(__dirname, './node_modules/dompurify'),
-      'jotai': path.resolve(__dirname, './node_modules/jotai'),
-      'clsx': path.resolve(__dirname, './node_modules/clsx'),
-      'i18next': path.resolve(__dirname, './node_modules/i18next'),
-      'react-i18next': path.resolve(__dirname, './node_modules/react-i18next'),
-      'framer-motion': path.resolve(__dirname, './node_modules/framer-motion'),
-      'react-hook-form': path.resolve(__dirname, './node_modules/react-hook-form'),
-      'tailwind-merge': path.resolve(__dirname, './node_modules/tailwind-merge'),
-      'class-variance-authority': path.resolve(__dirname, './node_modules/class-variance-authority'),
+      'dompurify': path.resolve(__dirname, '../node_modules/dompurify'),
+      'jotai': path.resolve(__dirname, '../node_modules/jotai'),
+      'clsx': path.resolve(__dirname, '../node_modules/clsx'),
+      'i18next': path.resolve(__dirname, '../node_modules/i18next'),
+      'i18next-browser-languagedetector': path.resolve(__dirname, '../node_modules/i18next-browser-languagedetector'),
+      'react-i18next': path.resolve(__dirname, '../node_modules/react-i18next'),
+      'framer-motion': path.resolve(__dirname, '../node_modules/framer-motion'),
+      'react-hook-form': path.resolve(__dirname, '../node_modules/react-hook-form'),
+      'tailwind-merge': path.resolve(__dirname, '../node_modules/tailwind-merge'),
+      'class-variance-authority': path.resolve(__dirname, '../node_modules/class-variance-authority'),
     },
     // Ensure modules are resolved from the client directory first
     preserveSymlinks: true,
@@ -304,6 +304,75 @@ export function sourcemapExclude(opts?: SourcemapExclude): Plugin {
           map: { mappings: '' },
         };
       }
+    },
+  };
+}
+
+/**
+ * Custom alias resolver for ~ imports based on the file's location
+ * - Files in packages/client/src resolve ~ to packages/client/src
+ * - Files in client/src resolve ~ to client/src
+ */
+export function contextAwareTildeAlias(): Plugin {
+  const packagesClientSrc = path.resolve(__dirname, '../packages/client/src');
+  const clientSrc = path.resolve(__dirname, 'src');
+
+  // Try to resolve a file with common extensions
+  function tryResolveWithExtensions(basePath: string): string | null {
+    // Check if basePath is already a directory
+    if (fs.existsSync(basePath) && fs.statSync(basePath).isDirectory()) {
+      // Try index files in the directory
+      for (const ext of ['.ts', '.tsx', '.js', '.jsx']) {
+        const indexPath = path.join(basePath, `index${ext}`);
+        if (fs.existsSync(indexPath) && fs.statSync(indexPath).isFile()) {
+          return indexPath;
+        }
+      }
+      return null;
+    }
+
+    // Try with various extensions
+    const extensions = ['', '.ts', '.tsx', '.js', '.jsx', '.json'];
+    for (const ext of extensions) {
+      const fullPath = basePath + ext;
+      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+        return fullPath;
+      }
+    }
+
+    // Try index files if basePath might be a directory
+    for (const ext of ['.ts', '.tsx', '.js', '.jsx']) {
+      const indexPath = path.join(basePath, `index${ext}`);
+      if (fs.existsSync(indexPath) && fs.statSync(indexPath).isFile()) {
+        return indexPath;
+      }
+    }
+
+    return null;
+  }
+
+  return {
+    name: 'context-aware-tilde-alias',
+    enforce: 'pre',
+    resolveId(source: string, importer: string | undefined) {
+      if (!source.startsWith('~/')) {
+        return null;
+      }
+
+      const sourcePath = source.slice(2); // Remove ~/
+      let basePath: string;
+
+      if (importer && importer.replace(/\\/g, '/').includes('/packages/client/src/')) {
+        // Resolve relative to packages/client/src
+        basePath = path.resolve(packagesClientSrc, sourcePath);
+      } else {
+        // Resolve relative to client/src (default)
+        basePath = path.resolve(clientSrc, sourcePath);
+      }
+
+      // Try to resolve the file with various extensions
+      const resolved = tryResolveWithExtensions(basePath);
+      return resolved;
     },
   };
 }
