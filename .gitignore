@@ -31,6 +31,7 @@ client/src/localization/languages/*_missing_keys.json
 
 # Compiled Dirs (http://nodejs.org/api/addons.html)
 build/
+desktop/
 dist/
 public/main.js
 public/main.js.map
