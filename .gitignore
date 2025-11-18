@@ -33,6 +33,7 @@ client/src/localization/languages/*_missing_keys.json
 build/
 desktop/
 dist/
+dist-desktop/
 public/main.js
 public/main.js.map
 public/main.js.LICENSE.txt
