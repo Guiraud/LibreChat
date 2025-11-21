@@ -1,0 +1,5 @@
+# This directory contains build resources for the desktop app
+# Place your icon files here:
+# - icon.icns (macOS)
+# - icon.ico (Windows)
+# - icon.png (Linux/Generic)

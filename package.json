@@ -5,7 +5,8 @@
   "workspaces": [
     "api",
     "client",
-    "packages/*"
+    "packages/*",
+    "desktop"
   ],
   "scripts": {
     "update": "node config/update.js",
@@ -82,7 +83,13 @@
     "migrate:agent-permissions:batch": "node config/migrate-agent-permissions.js --batch-size=50",
     "migrate:prompt-permissions:dry-run": "node config/migrate-prompt-permissions.js --dry-run",
     "migrate:prompt-permissions": "node config/migrate-prompt-permissions.js",
-    "migrate:prompt-permissions:batch": "node config/migrate-prompt-permissions.js --batch-size=50"
+    "migrate:prompt-permissions:batch": "node config/migrate-prompt-permissions.js --batch-size=50",
+    "desktop:dev": "cd desktop && npm run start",
+    "desktop:build": "node config/build-desktop.js",
+    "desktop:build:arm64": "npm run frontend && cd desktop && electron-builder --mac --arm64 --config electron-builder.config.js",
+    "desktop:build:x64": "npm run frontend && cd desktop && electron-builder --mac --x64 --config electron-builder.config.js",
+    "desktop:build:universal": "npm run frontend && cd desktop && electron-builder --mac --universal --config electron-builder.config.js",
+    "desktop:fix": "bash desktop/fix-app-builder.sh"
   },
   "repository": {
     "type": "git",
@@ -102,6 +109,7 @@
     "@microsoft/eslint-formatter-sarif": "^3.1.0",
     "@playwright/test": "^1.56.1",
     "@types/react-virtualized": "^9.22.0",
+    "app-builder-bin": "^4.0.0",
     "caniuse-lite": "^1.0.30001741",
     "cross-env": "^7.0.3",
     "elliptic": "^6.6.1",
@@ -154,5 +162,20 @@
       "admin/",
       "packages/"
     ]
+  },
+  "dependencies": {
+    "@codemirror/lang-css": "^6.3.1",
+    "@codemirror/lang-html": "^6.4.11",
+    "@codemirror/lang-javascript": "^6.2.4",
+    "@lezer/highlight": "^1.2.3",
+    "@react-hook/intersection-observer": "^3.1.2",
+    "@stitches/core": "^1.2.8",
+    "anser": "^2.3.3",
+    "clean-set": "^1.1.2",
+    "dequal": "^2.0.3",
+    "escape-carriage": "^1.3.1",
+    "lz-string": "^1.5.0",
+    "outvariant": "^1.4.3",
+    "react-devtools-inline": "^7.0.1"
   }
 }
